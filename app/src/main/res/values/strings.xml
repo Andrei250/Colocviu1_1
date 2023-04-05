@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Colocviu1_1</string>
+    <string name="north_button">North</string>
+    <string name="south_button">South</string>
+    <string name="east_button">East</string>
+    <string name="west_button">West</string>
+    <string name="navigate_second">Navigate Second</string>
+</resources>
