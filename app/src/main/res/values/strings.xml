@@ -5,4 +5,7 @@
     <string name="east_button">East</string>
     <string name="west_button">West</string>
     <string name="navigate_second">Navigate Second</string>
+
+    <string name="register_btn">Register</string>
+    <string name="cancel_btn">Cancel</string>
 </resources>
