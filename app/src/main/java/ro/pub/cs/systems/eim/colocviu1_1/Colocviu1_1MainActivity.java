@@ -1,6 +1,9 @@
 package ro.pub.cs.systems.eim.colocviu1_1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +17,7 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
     private Button north, west, east, south, navigate;
     ButtonClickListener buttonClickListener = new ButtonClickListener();
     private int pressedButtons = 0;
+    private IntentFilter intentFilter = new IntentFilter();
 
     private class ButtonClickListener implements View.OnClickListener {
 
@@ -61,8 +65,23 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
                     pressedButtons = 0;
                     break;
             }
+
+            if (pressedButtons == 4) {
+                Intent intent = new Intent(getApplicationContext(), Colocviu1_1Service.class);
+                intent.putExtra(Constants.INTENT_TAG, label.getText());
+                getApplicationContext().startService(intent);
+            }
         }
 
+    }
+
+
+    private MessageBroadcastReceiver messageBroadcastReceiver = new MessageBroadcastReceiver();
+    private class MessageBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(Constants.BROADCAST_RECEIVER_TAG, intent.getStringExtra(Constants.BROADCAST_RECEIVER_EXTRA));
+        }
     }
 
     @Override
@@ -92,6 +111,8 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
         }
 
         Log.i(Constants.PRESSED_BTN_TAG, String.valueOf(pressedButtons));
+
+        intentFilter.addAction(Constants.INTENT_FILTER);
     }
 
     @Override
@@ -117,5 +138,24 @@ public class Colocviu1_1MainActivity extends AppCompatActivity {
             else
                 Toast.makeText(this, "Register", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(messageBroadcastReceiver, intentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(messageBroadcastReceiver);
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Intent intent = new Intent(this, Colocviu1_1Service.class);
+        stopService(intent);
+        super.onDestroy();
     }
 }
